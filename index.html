@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CuencaKongs</title>
+    <audio id="background-audio" src="https://cdn.glitch.global/65f818fa-abf9-45cb-8c99-a24deed0d232/coscu.mp3?v=1734922178507" loop></audio>
+
+    <style>
+      
+      /*-------------------------*/
+           body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f7f7f7;
+        }
+
+        .confetti {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: explode 3s cubic-bezier(0.42, 0, 0.58, 1) forwards;
+        }
+
+        .confetti.spin {
+            animation: explode 3s cubic-bezier(0.42, 0, 0.58, 1) forwards, spin 3s linear infinite;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(0.8) translate(0, 0);
+                opacity: 1;
+            }
+            40% {
+                transform: scale(1.2) translate(var(--x), var(--y));
+                opacity: 0.9;
+            }
+            100% {
+                transform: scale(1) translate(0, 100vh);
+                opacity: 0;
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+      
+      
+      
+        /* Estilos generales */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ff0000; /* Fondo rojo */
+            color: #ffffff; /* Texto blanco */
+            display: flex;
+            flex-direction: column; /* Asegura que todo esté en columna */
+            height: 100vh; /* Asegura que la altura sea de 100vh */
+            overflow: auto; /* Permite el desplazamiento */
+        }
+
+        /* Pantalla de carga */
+        #loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ff0000; /* Fondo rojo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+            opacity: 1;
+            animation: fadeOut 1s ease-out 2s forwards; /* Desvanecimiento después de 2s */
+        }
+
+        #loader .text {
+            font-size: 2em;
+            margin-top: 10px;
+        }
+
+        /* Efecto de copos de nieve */
+        .snowflake {
+            color: #ffffff;
+            font-size: 1.5em;
+            position: absolute;
+            top: -10%;
+            animation: fall linear infinite, fadeOutSnow 1s ease-out 2.5s forwards;
+        }
+
+        /* Animación de caída de los copos de nieve */
+        @keyframes fall {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(110vh); }
+        }
+
+        /* Animación de desvanecimiento de los copos */
+        @keyframes fadeOutSnow {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* Desvanecimiento del loader completo */
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* Barra de conteo */
+        #countdown-container {
+            position: fixed; /* Fijado en la parte superior */
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #000000; /* Fondo negro */
+            z-index: 9998; /* Asegura que esté por encima de otros elementos */
+            padding: 10px 0;
+            text-align: center;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3); /* Sombra sutil */
+        }
+
+        /* Estilos del contador como botón negro */
+        #countdown {
+            padding: 10px 20px;
+            font-size: 1.5em;
+            color: #ff0000; /* Texto rojo */
+            background-color: #000000; /* Fondo negro */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Estilos del contenedor principal */
+        .container {
+            display: none; /* Ocultar el contenido inicialmente */
+            padding: 20px;
+            background-color: rgba(255, 0, 0, 0.8); /* Fondo rojo con transparencia */
+            border-radius: 8px;
+            max-width: 600px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            margin-top: 100px; /* Asegura que el contenido no se solape con el contador */
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-top: 0;
+        }
+
+        /* Animación de rotación 360 grados */
+        @keyframes rotate360 {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Animación de meneo suave (efecto de ola) */
+        @keyframes waveEffect {
+            0% {
+                transform: rotate(360deg);
+            }
+            50% {
+                transform: rotate(355deg); /* Menos movimiento para un efecto más suave */
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Efecto de Boom (expansión y contracción) */
+        @keyframes boomEffect {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Estilo para los botones de la lista */
+        .button-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 150px; /* Añadido espacio extra para los botones */
+            align-items: center;
+            width: 100%; /* Asegura que ocupe todo el ancho disponible */
+            box-sizing: border-box; /* Para incluir el padding en el cálculo del tamaño */
+            margin-bottom: 100px; /* Asegura que los botones no se solapen con el final de la página */
+        }
+
+        .button-list button {
+            padding: 12px 25px;
+            font-size: 1.2em;
+            color: #ff0000; /* Texto rojo */
+            background-color: #000000; /* Fondo negro */
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 250px; /* Establece un ancho fijo para los botones */
+        }
+
+        .button-list button:hover {
+            background-color: #333333;
+        }
+
+        /* Estilo para el botón de sonido */
+        #play-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 1.5em; /* Tamaño de texto más pequeño */
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 12px; /* Menor padding para un botón más pequeño */
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease;
+        }
+
+        #play-button:hover {
+            background-color: #cc0000;
+        }
+
+        /* Hacer que la página sea desplazable */
+        .content-wrapper {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Pantalla de carga con copos de nieve -->
+    <div id="loader">
+        <div class="snowflake">❄️</div>
+        <div class="text" id="loader-text">Organizando el viaje...</div>
+    </div>
+
+    <!-- Contenedor para el contador con barra negra -->
+    <div id="countdown-container">
+        <button id="countdown"></button>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="content-wrapper">
+        <div class="container" id="mainContent">
+            <h1 id="title">CuencaKongs 2!</h1>
+
+            <!-- Lista de botones -->
+            <div class="button-list">
+                <button onclick="alert('EL NUÑEZ')">Quien va?</button>
+                <button onclick="alert('El nuñez tiene callos ')">Caminar</button>
+                <button onclick="alert('Parque central')">Parque</button>
+                <button onclick="alert('Todos los Malls')">Mall</button>
+                <button onclick="alert('No hay plata')">Cine</button>
+                <button onclick="alert('No hay plata jajaja')">PlayLandPark</button>
+                <button onclick="alert('Hojita del domingo para la Angelita')">Catedral</button>
+                <button onclick="alert('Pijamada real (sin plata)')">Pijamada</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón de sonido -->
+    <button id="play-button" onclick="toggleAudio()">🔊</button>
+
+    <script>
+        // Función para crear los copos de nieve
+        function createSnowflakes() {
+            for (let i = 0; i < 50; i++) { // Ajusta el número de copos
+                const snowflake = document.createElement("div");
+                snowflake.classList.add("snowflake");
+                snowflake.textContent = "❄️";
+                
+                // Asignar posiciones y duraciones aleatorias
+                snowflake.style.left = `${Math.random() * 100}vw`;
+                snowflake.style.animationDuration = `${2 + Math.random() * 1.5}s`; // Duración entre 2 y 3.5 segundos
+                snowflake.style.fontSize = `${1 + Math.random() * 1.5}em`; // Tamaño de 1 a 2.5em
+
+                document.getElementById("loader").appendChild(snowflake);
+            }
+        }
+
+        // Llamada a la función para crear los copos
+        createSnowflakes();
+
+        // Mostrar "¡Listo!" antes de que termine de cargar
+        setTimeout(function() {
+            document.getElementById("loader-text").innerText = "¡Listo!";
+        }, 2000); // Cambiar texto después de 2 segundos
+
+        // Mostrar el contenido principal después de 3 segundos
+        setTimeout(function() {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("mainContent").style.display = "block";
+            startCountdown(); // Iniciar el contador cuando la página esté lista
+        }, 3000); // 2s de animación + 1s de desvanecimiento
+
+        // Función para iniciar la cuenta regresiva
+        function startCountdown() {
+            const countdownElement = document.getElementById("countdown");
+            const targetDate = new Date("November 2, 2025 08:11:00").getTime(); // Fecha objetivo: 17 de noviembre de 2024
+
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+
+                // Calcular días, horas, minutos y segundos
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Mostrar el resultado en el botón de cuenta regresiva
+                countdownElement.innerHTML = `Faltan: ${days} dias con ${hours} horas ${minutes} minutos y ${seconds} segundos`;
+
+                // Si se ha alcanzado la fecha objetivo, detener el contador
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
+                    countdownElement.innerHTML = "chau";
+                }
+            }
+
+            // Actualizar el contador cada segundo
+            const countdownInterval = setInterval(updateCountdown, 1000);
+            updateCountdown(); // Llamar inmediatamente para evitar retraso inicial
+        }
+
+        // Función para alternar la reproducción de audio
+        function toggleAudio() {
+            const audio = document.getElementById("background-audio");
+            const playButton = document.getElementById("play-button");
+
+            if (audio.paused) {
+                audio.play();
+                playButton.textContent = "🔇";
+            } else {
+                audio.pause();
+                playButton.textContent = "🔊";
+            }
+        }
+
+        // Función para hacer el giro de 360 grados con meneo de ola y efecto de boom
+        function rotateTitle() {
+            const title = document.getElementById("title");
+            title.style.animation = "rotate360 2s ease-in-out"; // Solo rotación de 2 segundos
+
+            // Hacer el meneo después de la rotación
+            setTimeout(() => {
+                title.style.animation = "waveEffect 1s ease-in-out"; // Solo meneo de 1 segundo
+
+                // Efecto de boom después del meneo
+                setTimeout(() => {
+                    title.style.animation = "boomEffect 0.5s ease-in-out"; // Boom 1
+                    setTimeout(() => {
+                        title.style.animation = "boomEffect 0.5s ease-in-out"; // Boom 2
+                    }, 500); // Segundo boom después de 0.5s
+                }, 1000); // Después del meneo
+            }, 2000); // Esperar 2 segundos antes de iniciar el meneo
+        }
+
+        // Ejecutar la rotación cada 5 segundos
+        setInterval(rotateTitle, 5000); // Llamar cada 5 segundos
+      
+      
+      /*----------------------/*/
+       function randomInRange(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    // Function to create a single confetti emoji
+    function createConfetti() {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.textContent = '🎉';
+
+        // Add spinning effect to some confetti
+        if (Math.random() > 0.7) {
+            confetti.classList.add('spin');
+        }
+
+        // Randomize position and animation duration
+        confetti.style.left = `${randomInRange(0, window.innerWidth)}px`;
+        confetti.style.top = `${randomInRange(0, window.innerHeight / 2)}px`;
+        confetti.style.setProperty('--x', `${randomInRange(-150, 150)}px`);
+        confetti.style.setProperty('--y', `${randomInRange(-100, 100)}px`);
+        confetti.style.animationDuration = `${randomInRange(2.5, 3)}s`;
+
+        document.body.appendChild(confetti);
+
+        // Remove confetti after animation ends
+        confetti.addEventListener('animationend', () => {
+            confetti.remove();
+        });
+    }
+
+    // Create multiple confetti explosions
+    function explodeConfetti() {
+        for (let i = 0; i < 80; i++) {
+            setTimeout(createConfetti, i * 15);
+        }
+    }
+
+    // Trigger confetti explosion on a specific date
+    const triggerDate = new Date('2024-12-26T00:00:00'); // Set your desired date here
+    const currentDate = new Date();
+
+    if (currentDate >= triggerDate) {
+        window.onload = explodeConfetti;
+    }
+      
+      
+    </script>
+</body>
+</html>

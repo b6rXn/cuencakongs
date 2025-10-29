@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Agar.io</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #222;
+            font-family: 'Arial', sans-serif;
+        }
+        canvas {
+            display: block;
+        }
+        .score-board {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 10px;
+        }
+        .menu {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            display: block;
+            font-family: Arial, sans-serif;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+        }
+        .menu h2 {
+            margin: 0 0 20px 0;
+            font-size: 24px;
+        }
+        .menu input, .menu button {
+            padding: 12px 20px;
+            font-size: 18px;
+            margin: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .menu button:hover, .menu input:focus {
+            background-color: #45a049;
+        }
+        .menu input {
+            width: 250px;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="gameCanvas"></canvas>
+<div class="score-board" id="scoreBoard">
+    Masa: <span id="massDisplay">30</span>
+</div>
+
+<div class="menu" id="menu">
+    <h2>¡Bienvenido a Mini Agar.io!</h2>
+    <input type="text" id="playerName" placeholder="Escribe tu nombre" />
+    <button id="startButton">¡Empezar Juego!</button>
+</div>
+
+<script>
+    // Configuración del canvas
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Establecer el tamaño del canvas
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Jugador (célula)
+    let player = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        radius: 30,
+        color: "blue",
+        speed: 5,
+        mass: 30,
+        name: "Jugador",
+        balls: [{ x: canvas.width / 2, y: canvas.height / 2, radius: 30 }]
+    };
+
+    let bots = [];  // Lista de bots
+    let foodPoints = [];  // Puntos de comida en el mapa
+    let isDividing = false;  // Para controlar la división
+    let lastUniteTime = Date.now();  // Para controlar la unión de bolas
+
+    // Crear 10 bots aleatorios
+    function createBots() {
+        bots = [];
+        for (let i = 0; i < 10; i++) {
+            let bot = {
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 20 + 10,
+                color: "red",
+                speed: 2,
+                name: `Bot ${i + 1}`,
+                directionX: Math.random() * 2 - 1, // Dirección aleatoria
+                directionY: Math.random() * 2 - 1  // Dirección aleatoria
+            };
+            bots.push(bot);
+        }
+    }
+
+    // Crear puntos de comida en el mapa
+    function createFood() {
+        foodPoints = [];
+        for (let i = 0; i < 50; i++) {
+            let food = {
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: 5 + Math.random() * 10,
+                color: "green"
+            };
+            foodPoints.push(food);
+        }
+    }
+
+    // Función para dibujar al jugador
+    function drawPlayer() {
+        player.balls.forEach(ball => {
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = player.color;
+            ctx.fill();
+            ctx.closePath();
+
+            // Dibujar el nombre del jugador en el centro de la bola
+            ctx.font = "16px Arial";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(player.name, ball.x, ball.y);
+        });
+    }
+
+    // Función para dibujar los bots
+    function drawBots() {
+        bots.forEach(bot => {
+            ctx.beginPath();
+            ctx.arc(bot.x, bot.y, bot.radius, 0, Math.PI * 2);
+            ctx.fillStyle = bot.color;
+            ctx.fill();
+            ctx.closePath();
+
+            // Dibujar el nombre del bot en el centro de la bola
+            ctx.font = "16px Arial";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(bot.name, bot.x, bot.y);
+        });
+    }
+
+    // Función para dibujar los puntos de comida
+    function drawFood() {
+        foodPoints.forEach(food => {
+            ctx.beginPath();
+            ctx.arc(food.x, food.y, food.radius, 0, Math.PI * 2);
+            ctx.fillStyle = food.color;
+            ctx.fill();
+            ctx.closePath();
+        });
+    }
+
+    // Función para mover al jugador con el mouse
+    function movePlayer(e) {
+        let mousePos = { x: e.clientX, y: e.clientY };
+        player.balls.forEach(ball => {
+            let dx = mousePos.x - ball.x;
+            let dy = mousePos.y - ball.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance > ball.radius) {
+                let angle = Math.atan2(dy, dx);
+                ball.x += Math.cos(angle) * player.speed;
+                ball.y += Math.sin(angle) * player.speed;
+            }
+        });
+    }
+
+    // Función para mover los bots aleatoriamente
+    function moveBots() {
+        bots.forEach(bot => {
+            bot.x += bot.directionX * bot.speed;
+            bot.y += bot.directionY * bot.speed;
+
+            // Limitar el movimiento dentro del canvas
+            if (bot.x < 0 || bot.x > canvas.width) bot.directionX = -bot.directionX;
+            if (bot.y < 0 || bot.y > canvas.height) bot.directionY = -bot.directionY;
+        });
+    }
+
+    // Verificar si el jugador puede ser comido por los bots
+    function checkBotCollision() {
+        bots.forEach((bot, index) => {
+            let dx = player.balls[0].x - bot.x;
+            let dy = player.balls[0].y - bot.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < player.balls[0].radius + bot.radius) {
+                if (player.balls[0].radius < bot.radius) {
+                    // El bot es más grande, el jugador muere
+                    alert("¡Te ha comido un bot! Fin del juego.");
+                    location.reload();
+                }
+            }
+        });
+    }
+
+    // Verificar si el jugador come un bot
+    function checkBotEating() {
+        bots.forEach((bot, index) => {
+            let dx = player.balls[0].x - bot.x;
+            let dy = player.balls[0].y - bot.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < player.balls[0].radius + bot.radius) {
+                if (player.balls[0].radius > bot.radius) {
+                    player.mass += bot.radius;
+                    player.radius = Math.sqrt(player.mass);
+                    player.balls.push({ x: bot.x, y: bot.y, radius: bot.radius });
+                    bots.splice(index, 1); // Eliminar el bot comido
+
+                    // Regenerar bot después de un tiempo
+                    setTimeout(() => {
+                        createBots();
+                    }, 1000);
+                }
+            }
+        });
+    }
+
+    // Dividir el jugador
+    function dividePlayer() {
+        if (player.mass >= 50 && !isDividing) {
+            isDividing = true;
+            let ball = player.balls[0];
+            let newBall = { x: ball.x + 20, y: ball.y + 20, radius: ball.radius / 2 };
+            ball.radius /= 2;
+            player.balls.push(newBall);
+
+            setTimeout(() => {
+                isDividing = false;
+            }, 1000); // El tiempo para volver a dividir
+        }
+    }
+
+    // Función de actualización del juego
+    function updateGame() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);  // Limpiar el canvas
+
+        moveBots();  // Mover los bots
+        drawPlayer();  // Dibujar al jugador
+        drawBots();  // Dibujar los bots
+        drawFood();  // Dibujar los puntos de comida
+
+        checkBotCollision();  // Verificar si el jugador ha sido comido por un bot
+        checkBotEating();  // Verificar si el jugador ha comido un bot
+
+        // Limitar la masa del jugador
+        if (player.mass > 200) {
+            player.mass = 200;  // Limitar la masa a 200
+            player.radius = Math.sqrt(player.mass);  // Actualizar el tamaño del jugador
+        }
+
+        // Actualizar la puntuación
+        document.getElementById("massDisplay").textContent = Math.floor(player.mass);
+
+        // Llamar de nuevo al game loop
+        requestAnimationFrame(updateGame);
+    }
+
+    // Función para iniciar el juego
+    function startGame() {
+        player.name = document.getElementById("playerName").value || "Jugador";
+        document.getElementById("menu").style.display = "none";  // Ocultar el menú
+
+        createBots();  // Crear los bots
+        createFood();  // Crear puntos de comida
+
+        canvas.addEventListener("mousemove", movePlayer);  // Mover al jugador con el mouse
+        canvas.addEventListener("keydown", (e) => { if (e.key === " ") dividePlayer(); });  // Dividir al presionar espacio
+        updateGame();  // Iniciar el juego
+    }
+
+    // Evento para iniciar el juego
+    document.getElementById("startButton").addEventListener("click", startGame);
+
+    // Mostrar el menú al cargar la página
+    window.onload = function() {
+        document.getElementById("menu").style.display = "block";
+    };
+
+</script>
+
+</body>
+</html>
