@@ -251,6 +251,59 @@
             overflow-y: auto;
         }
 
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.85);
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.modal-content {
+    background: #000;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    max-width: 90%;
+}
+
+.modal-content img {
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: 8px;
+}
+
+.close {
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+    float: right;
+}
+
+.arrows {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.arrows button {
+    background: #ff0000;
+    border: none;
+    color: #fff;
+    padding: 10px 15px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+
     </style>
 </head>
 <body>
@@ -272,6 +325,7 @@
 
             <!-- Lista de botones -->
             <div class="button-list">
+                <button onclick="openMemories()">Memories</button>
                 <button onclick="alert('EL NUÑEZ')">Quien va?</button>
                 <button onclick="alert('El nuñez tiene callos ')">Caminar</button>
                 <button onclick="alert('Parque central')">Parque</button>
@@ -432,7 +486,66 @@
         window.onload = explodeConfetti;
     }
       
+
+// Lista de fotos (agrega tú más enlaces)
+const photos = [
+    "https://i.imgur.com/Tv7Fv4G.jpeg",
+    "https://i.imgur.com/KtTiF05.jpeg",
+    "https://i.imgur.com/C91EBGl.jpeg",
+    "https://i.imgur.com/Jp6QHle.jpeg",
+    "https://i.imgur.com/XHzXuE6.jpeg",
+    "https://i.imgur.com/mAoj9av.jpeg",
+    "https://i.imgur.com/RYgzzm6.jpeg",
+    "https://i.imgur.com/0YtrsGs.jpeg",
+    "https://i.imgur.com/alUGmLw.jpeg",
+    "https://i.imgur.com/xrjRwsx.jpeg",
+    "https://i.imgur.com/Q0yVUqC.jpeg",
+    "https://i.imgur.com/F8utfDA.jpeg",
+    "https://i.imgur.com/lDRmL1P.jpeg",
+    "https://i.imgur.com/iWkJvw8.jpeg",
+    "https://i.imgur.com/6RWRnVG.jpeg",
+    "https://i.imgur.com/vCPkepZ.jpeg"
+];
+
+let currentIndex = 0;
+
+function openMemories() {
+    const modal = document.getElementById("memoriesModal");
+    currentIndex = Math.floor(Math.random() * photos.length);
+    document.getElementById("memoryImage").src = photos[currentIndex];
+    modal.style.display = "flex";
+}
+
+function closeMemories() {
+    document.getElementById("memoriesModal").style.display = "none";
+}
+
+function nextPhoto() {
+    currentIndex = (currentIndex + 1) % photos.length;
+    document.getElementById("memoryImage").src = photos[currentIndex];
+}
+
+function prevPhoto() {
+    currentIndex = (currentIndex - 1 + photos.length) % photos.length;
+    document.getElementById("memoryImage").src = photos[currentIndex];
+}
+
+
       
     </script>
+
+<div id="memoriesModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeMemories()">✖</span>
+        <img id="memoryImage" src="" alt="Foto del viaje">
+        <div class="arrows">
+            <button onclick="prevPhoto()">◀️</button>
+            <button onclick="nextPhoto()">▶️</button>
+        </div>
+    </div>
+</div>
+
+
+
 </body>
 </html>
