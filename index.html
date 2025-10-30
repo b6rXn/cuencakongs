@@ -601,94 +601,88 @@ async function loginUser() {
 document.querySelector("#authModal .close").addEventListener("click", () => {
     document.getElementById("authModal").style.display = "none";
 });
+// --- Mostrar perfil ---
+async function showProfile(user) {
+  if (!user) return alert("Debes iniciar sesión primero");
 
+  const profileModal = document.getElementById("profileModal");
+  profileModal.style.display = "block";
 
-function showProfile(user) {
-  document.getElementById("profileModal").style.display = "block";
-
-  // Aquí obtendremos los datos del Firestore (nickname, email, etc)
   const docRef = doc(db, "usuarios", user.uid);
-  getDoc(docRef).then((docSnap) => {
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      document.getElementById("profileNickname").textContent = data.nickname;
-      document.getElementById("profileEmail").textContent = data.email;
-    } else {
-      document.getElementById("profileNickname").textContent = "Sin nombre";
-      document.getElementById("profileEmail").textContent = "";
-    }
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+
+    document.getElementById("profileNickname").textContent = data.nickname || "Sin nombre";
+    document.getElementById("modalProfileDescription").value = data.description || "";
+    document.getElementById("modalProfilePhoto").src =
+      data.profilePhotoURL ||
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTWJGvwYwD2uCTkKeSt0pCkvzQPbjEcxMx8Q&s";
+    document.getElementById("modalProfileBanner").src =
+      data.bannerURL ||
+      "https://wallpapers.com/images/hd/pure-black-background-py9pa0f1mlsscm9s.jpg";
+  } else {
+    document.getElementById("profileNickname").textContent = "Sin nombre";
+  }
+}
+
+// --- Guardar descripción ---
+async function saveProfileModal() {
+  const user = auth.currentUser;
+  if (!user) return alert("Debes iniciar sesión primero");
+
+  const description = document.getElementById("modalProfileDescription").value;
+  await updateDoc(doc(db, "usuarios", user.uid), { description });
+  alert("Descripción actualizada!");
+}
+
+// --- Cambiar foto de perfil ---
+async function changeProfilePhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const storageRef = ref(storage, `profilePhotos/${user.uid}`);
+  await uploadBytes(storageRef, file);
+  const photoURL = await getDownloadURL(storageRef);
+
+  await updateDoc(doc(db, "usuarios", user.uid), { profilePhotoURL: photoURL });
+  document.getElementById("modalProfilePhoto").src = photoURL;
+  alert("Foto de perfil actualizada!");
+}
+
+// --- Cambiar banner ---
+async function changeBanner(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const storageRef = ref(storage, `banners/${user.uid}`);
+  await uploadBytes(storageRef, file);
+  const bannerURL = await getDownloadURL(storageRef);
+
+  await updateDoc(doc(db, "usuarios", user.uid), { bannerURL });
+  document.getElementById("modalProfileBanner").src = bannerURL;
+  alert("Banner actualizado!");
+}
+
+// --- Cerrar perfil ---
+function closeProfile() {
+  document.getElementById("profileModal").style.display = "none";
+}
+
+// --- Cerrar sesión ---
+function logoutUser() {
+  signOut(auth).then(() => {
+    alert("Sesión cerrada");
+    document.getElementById("profileModal").style.display = "none";
+    document.getElementById("loginButton").style.display = "inline-block";
   });
 }
 
-async function saveProfile() {
-    const user = auth.currentUser;
-    if (!user) return;
-    const description = document.getElementById("profileDescription").value;
-    await updateDoc(doc(db, "usuarios", user.uid), { description });
-    alert("Perfil actualizado!");
-}
-
-async function changeProfilePhoto(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const user = auth.currentUser;
-    if (!user) return;
-
-    const storageRef = ref(storage, `profilePhotos/${user.uid}`);
-    await uploadBytes(storageRef, file);
-    const photoURL = await getDownloadURL(storageRef);
-
-    await updateDoc(doc(db, "usuarios", user.uid), { profilePhotoURL: photoURL });
-    document.getElementById("modalProfilePhoto").src = photoURL;
-    alert("Foto de perfil actualizada!");
-}
-
-
-async function openProfile() {
-    profileModal.style.display = "flex";
-    const user = auth.currentUser;
-    if (!user) return alert("Debes iniciar sesión primero");
-
-    const docSnap = await getDoc(doc(db, "usuarios", user.uid));
-    if (!docSnap.exists()) return;
-
-    const data = docSnap.data();
-    document.getElementById("modalProfileNickname").innerText = data.nickname;
-    document.getElementById("modalProfileDescription").value = data.description || "";
-    document.getElementById("modalProfilePhoto").src = data.profilePhotoURL || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTWJGvwYwD2uCTkKeSt0pCkvzQPbjEcxMx8Q&s";
-    document.getElementById("modalProfileBanner").src = data.bannerURL || "https://wallpapers.com/images/hd/pure-black-background-py9pa0f1mlsscm9s.jpg";
-}
-async function saveProfileModal() {
-    const user = auth.currentUser;
-    if (!user) return alert("Debes iniciar sesión primero");
-
-    const description = document.getElementById("modalProfileDescription").value;
-    await updateDoc(doc(db, "usuarios", user.uid), { description });
-    alert("Perfil actualizado!");
-}
-
-function closeProfile() { profileModal.style.display = "none"; }
-async function loadProfile() {
-    const user = auth.currentUser;
-    if (!user) return;
-    const docSnap = await getDoc(doc(db, "usuarios", user.uid));
-    if (docSnap.exists()) {
-        const data = docSnap.data();
-        document.getElementById("profileNickname").innerText = data.nickname;
-        document.getElementById("profileEmail").innerText = data.email;
-        document.getElementById("profileDescription").value = data.description || "";
-        document.getElementById("profilePhoto").src = data.profilePhotoURL || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTWJGvwYwD2uCTkKeSt0pCkvzQPbjEcxMx8Q&s";
-    }
-}
-
-function logoutUser() {
-    signOut(auth).then(() => {
-        alert("Sesión cerrada");
-        authButton.innerText = "Iniciar sesión";
-        authModal.style.display = "none";
-        profileModal.style.display = "none";
-    });
-}
 
 
 
@@ -778,16 +772,17 @@ window.changeProfilePhoto = changeProfilePhoto;
 
 <!-- Modal de perfil -->
 <div id="profileModal" class="modal">
-  <div class="modal-content" style="max-width:400px; padding:0; overflow:hidden; border-radius:15px; background:#0b0b0b; color:white; box-shadow:0 0 20px rgba(255,0,0,0.2); position:relative;">
+  <div class="modal-content" style="max-width:420px; padding:0; overflow:hidden; border-radius:15px; background:#0b0b0b; color:white; box-shadow:0 0 20px rgba(255,0,0,0.3); position:relative;">
+    
     <span class="close" onclick="closeProfile()" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:20px; color:#fff;">✖</span>
 
     <!-- Banner editable -->
-    <div style="position: relative; width:100%; height:120px; overflow:hidden;">
+    <div style="position:relative; width:100%; height:130px; overflow:hidden;">
       <img id="modalProfileBanner" 
            src="https://wallpapers.com/images/hd/pure-black-background-py9pa0f1mlsscm9s.jpg" 
            style="width:100%; height:100%; object-fit:cover;">
       <label for="bannerInput" 
-             style="position:absolute; bottom:8px; right:8px; background:#ff0000; padding:5px 10px; border-radius:6px; cursor:pointer; font-size:12px;">
+             style="position:absolute; bottom:8px; right:8px; background:rgba(255,0,0,0.8); padding:5px 10px; border-radius:6px; cursor:pointer; font-size:12px;">
         Cambiar banner
       </label>
       <input type="file" id="bannerInput" accept="image/*" style="display:none;">
@@ -795,8 +790,9 @@ window.changeProfilePhoto = changeProfilePhoto;
 
     <!-- Contenido del perfil -->
     <div style="padding:20px; text-align:center;">
+      <!-- Foto de perfil -->
       <img id="modalProfilePhoto" 
-           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTWJGvwYwD2uCTkKeSt0pCkvzQPbjEcxMx8Q&s" 
+           src="https://i.imgur.com/0bZQYCE.png" 
            style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #ff0000;">
       <br>
       <label for="profilePhotoInput" 
@@ -804,12 +800,29 @@ window.changeProfilePhoto = changeProfilePhoto;
         Cambiar foto
       </label>
       <input type="file" id="profilePhotoInput" accept="image/*" style="display:none;">
+
+      <!-- Nickname -->
       <h3 id="profileNickname" style="margin-top:10px;">Nickname</h3>
-      <textarea id="modalProfileDescription" placeholder="Escribe una descripción..." 
-                style="width:100%; height:60px; margin-top:10px; border-radius:6px; border:none; padding:8px; resize:none; font-family:inherit;"></textarea>
+
+      <!-- Estado -->
+      <p style="font-size:0.95em; color:lightgreen; margin:5px 0 15px 0;">
+        <span style="display:inline-block; width:10px; height:10px; background:limegreen; border-radius:50%; margin-right:6px;"></span>
+        Activo ahora
+      </p>
+
+      <!-- Descripción -->
+      <textarea id="modalProfileDescription" placeholder="Escribe algo sobre ti..." 
+                style="width:100%; height:80px; margin-top:10px; border-radius:8px; border:none; padding:10px; background:#1a1a1a; color:white; resize:none; font-family:inherit;"></textarea>
+
+      <!-- Botones -->
       <button onclick="saveProfileModal()" 
-              style="margin-top:10px; background:#ff0000; border:none; padding:10px 20px; border-radius:8px; color:white; font-weight:bold; cursor:pointer;">
+              style="margin-top:10px; background:#ff0000; border:none; padding:10px 20px; border-radius:8px; color:white; font-weight:bold; cursor:pointer; width:100%;">
         Guardar cambios
+      </button>
+
+      <button onclick="logoutUser()" 
+              style="margin-top:10px; background:#333; border:none; padding:10px 20px; border-radius:8px; color:white; font-weight:bold; cursor:pointer; width:100%;">
+        Cerrar sesión
       </button>
     </div>
   </div>
