@@ -363,20 +363,7 @@ setTimeout(() => {
 }, 3000);
 
 
-async function changeBanner(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const user = auth.currentUser;
-    if (!user) return;
 
-    const storageRef = ref(storage, `profileBanners/${user.uid}`);
-    await uploadBytes(storageRef, file);
-    const bannerURL = await getDownloadURL(storageRef);
-
-    await updateDoc(doc(db, "usuarios", user.uid), { bannerURL });
-    document.getElementById("modalProfileBanner").src = bannerURL;
-    alert("Banner actualizado!");
-}
 
 window.changeBanner = changeBanner;
 
