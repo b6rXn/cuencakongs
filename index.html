@@ -671,6 +671,16 @@ function logoutUser() {
 }
 
 
+function openProfile() {
+    const user = auth.currentUser;
+    if (!user) {
+        alert("Debes iniciar sesión primero");
+        openLogin();
+        return;
+    }
+    showProfile(user);
+}
+window.openProfile = openProfile;
 
 
 /* ---------- Eventos ---------- */
@@ -789,7 +799,7 @@ window.changeProfilePhoto = changeProfilePhoto;
       <input type="file" id="profilePhotoInput" accept="image/*" style="display:none;">
 
       <!-- Nickname -->
-      <h3 id="profileNickname" style="margin-top:10px;">Nickname</h3>
+      <h3 id="modalProfileNickname" style="margin-top:10px;">Nickname</h3>
 
       <!-- Estado -->
       <p style="font-size:0.95em; color:lightgreen; margin:5px 0 15px 0;">
