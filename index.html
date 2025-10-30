@@ -519,30 +519,34 @@ window.prevPhoto = prevPhoto;
 
 /* ----------------------------- Firebase ----------------------------- */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-storage.js";
+import { 
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+import { 
+  getFirestore, doc, setDoc, getDoc, updateDoc 
+} from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+import { 
+  getStorage, ref, uploadBytes, getDownloadURL 
+} from "https://www.gstatic.com/firebasejs/10.10.0/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB6l2qW57yNWDssci4CuFWDSHX-tn4cWxA",
   authDomain: "cuencakongs2.firebaseapp.com",
   projectId: "cuencakongs2",
-storageBucket: "cuencakongs2.appspot.com",
+  storageBucket: "cuencakongs2.appspot.com",
   messagingSenderId: "605592434535",
-  appId: "1:605592434535:web:ddf65325597814fb1661c2",
-  measurementId: "G-22R6QMBGWN"
+  appId: "1:605592434535:web:ddf65325597814fb1661c2"
 };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const db = getFirestore();
 const storage = getStorage();
 
-/* ---------- Elementos ---------- */
 const authModal = document.getElementById("authModal");
 const loginForm = document.getElementById("loginForm");
 const registerForm = document.getElementById("registerForm");
-const profileForm = document.getElementById("profileForm");
-const authButton = document.getElementById("profileButton");
+const profileButton = document.getElementById("profileButton");
+
 const profileModal = document.getElementById("profileModal");
 document.getElementById("profilePhotoInput").addEventListener("change", changeProfilePhoto);
 document.getElementById("bannerInput").addEventListener("change", changeBanner);
@@ -778,61 +782,57 @@ window.changeProfilePhoto = changeProfilePhoto;
 
 <!-- Modal de perfil -->
 <div id="profileModal" class="modal">
-  <div class="modal-content" style="max-width:400px; padding:0; overflow:hidden; border-radius:15px; background:#0b0b0b; color:white; box-shadow:0 0 25px rgba(255,0,0,0.3); position:relative;">
+  <div class="modal-content" style="max-width:450px; padding:0; border-radius:15px; overflow:hidden; background:#111; color:white; position:relative;">
     
-    <!-- Botón de cerrar -->
-    <span class="close" onclick="closeProfile()" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:22px; color:#fff; font-weight:bold;">✖</span>
-
-    <!-- Banner editable -->
-    <div style="position: relative; width:100%; height:130px; overflow:hidden;">
+    <span class="close" onclick="closeProfile()" style="position:absolute; top:10px; right:15px; font-size:22px; cursor:pointer;">✖</span>
+    
+    <!-- Banner + foto -->
+    <div style="position:relative;">
       <img id="modalProfileBanner" 
-           src="https://wallpapers.com/images/hd/pure-black-background-py9pa0f1mlsscm9s.jpg" 
-           alt="Banner del perfil"
-           style="width:100%; height:100%; object-fit:cover;">
-      <label for="bannerInput" 
-             style="position:absolute; bottom:8px; right:8px; background:rgba(255,0,0,0.8); padding:5px 10px; border-radius:6px; cursor:pointer; font-size:12px;">
-        Cambiar banner
-      </label>
-      <input type="file" id="bannerInput" accept="image/*" style="display:none;">
-    </div>
-
-    <!-- Foto y datos -->
-    <div style="text-align:center; margin-top:-45px;">
-      <img id="modalProfilePhoto" 
-           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTWJGvwYwD2uCTkKeSt0pCkvzQPbjEcxMx8Q&s" 
-           style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #ff0000; background:#111;">
-      <br>
-      <label for="profilePhotoInput" 
-             style="display:inline-block; margin-top:8px; background:#ff0000; padding:5px 10px; border-radius:6px; cursor:pointer; font-size:12px;">
-        Cambiar foto
-      </label>
-      <input type="file" id="profilePhotoInput" accept="image/*" style="display:none;">
-
-      <!-- Nickname y estado -->
-      <h3 id="modalProfileNickname" style="margin-top:10px; font-size:1.2em;">Nickname</h3>
-      <p style="color:#0f0; font-size:0.95em; margin:4px 0;">
-        <span style="display:inline-block; width:10px; height:10px; background:#00ff00; border-radius:50%; margin-right:5px;"></span>
-        Activo ahora
-      </p>
-    </div>
-
-    <!-- Descripción y botones -->
-    <div style="padding:15px; text-align:center;">
-      <textarea id="modalProfileDescription" placeholder="Escribe algo sobre ti..."
-                style="width:100%; height:70px; margin-top:10px; border-radius:8px; border:1px solid #222; background:#111; color:white; padding:8px; resize:none; font-family:inherit; text-align:center; font-size:0.95em; box-shadow:inset 0 0 5px rgba(255,0,0,0.3);"></textarea>
+           src="https://wallpapers.com/images/hd/pure-black-background-py9pa0f1mlsscm9s.jpg"
+           style="width:100%; height:150px; object-fit:cover;">
       
-      <button onclick="saveProfileModal()" 
-              style="margin-top:12px; width:100%; background:#ff0000; border:none; padding:10px; border-radius:8px; color:white; font-weight:bold; cursor:pointer; transition:0.2s;">
+      <!-- Foto de perfil -->
+      <div style="position:absolute; bottom:-50px; left:50%; transform:translateX(-50%);">
+        <img id="modalProfilePhoto" 
+             src="https://i.imgur.com/0bZQYCE.png"
+             style="width:100px; height:100px; border-radius:50%; border:3px solid #111; object-fit:cover;">
+        <!-- Indicador verde -->
+        <div style="position:absolute; bottom:8px; right:8px; width:18px; height:18px; background:#3ba55d; border:3px solid #111; border-radius:50%;"></div>
+      </div>
+    </div>
+
+    <!-- Contenido -->
+    <div style="padding:60px 20px 20px; text-align:center;">
+      <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
+        <h3 id="modalNickname" style="margin:10px 0;">Nickname</h3>
+        <!-- (Opcional: texto de estado) -->
+        <span style="font-size:13px; color:#3ba55d;">Activo</span>
+      </div>
+
+      <textarea id="modalDescription" placeholder="Escribe algo sobre ti..." 
+                style="width:100%; height:80px; border:none; border-radius:8px; padding:10px; background:#222; color:white; resize:none;"></textarea>
+      
+      <div style="margin-top:15px; text-align:left;">
+        <label style="display:block; margin:8px 0;">Cambiar foto:</label>
+        <input type="file" accept="image/*" onchange="changeProfilePhoto(event)" style="width:100%;">
+
+        <label style="display:block; margin:8px 0;">Cambiar banner:</label>
+        <input type="file" accept="image/*" onchange="changeBanner(event)" style="width:100%;">
+      </div>
+
+      <button onclick="saveProfileChanges()" 
+              style="margin-top:15px; background:#ff0000; color:white; border:none; border-radius:8px; padding:10px 20px; cursor:pointer;">
         Guardar cambios
       </button>
-      
       <button onclick="logoutUser()" 
-              style="margin-top:8px; width:100%; background:#222; border:none; padding:10px; border-radius:8px; color:#ff5555; font-weight:bold; cursor:pointer; transition:0.2s;">
+              style="margin-top:10px; background:#333; color:white; border:none; border-radius:8px; padding:10px 20px; cursor:pointer;">
         Cerrar sesión
       </button>
     </div>
   </div>
 </div>
+
 
 
 </body>
