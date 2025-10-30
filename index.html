@@ -603,18 +603,21 @@ document.querySelector("#authModal .close").addEventListener("click", () => {
 });
 
 
-async function showProfile(user) {
-    loginForm.style.display = "none";
-    registerForm.style.display = "none";
-    profileForm.style.display = "block";
-    const docSnap = await getDoc(doc(db, "usuarios", user.uid));
+function showProfile(user) {
+  document.getElementById("profileModal").style.display = "block";
+
+  // Aquí obtendremos los datos del Firestore (nickname, email, etc)
+  const docRef = doc(db, "usuarios", user.uid);
+  getDoc(docRef).then((docSnap) => {
     if (docSnap.exists()) {
-        const data = docSnap.data();
-        document.getElementById("profileNickname").innerText = `Nickname: ${data.nickname}`;
-        document.getElementById("profileEmail").innerText = `Email: ${data.email}`;
+      const data = docSnap.data();
+      document.getElementById("profileNickname").textContent = data.nickname;
+      document.getElementById("profileEmail").textContent = data.email;
+    } else {
+      document.getElementById("profileNickname").textContent = "Sin nombre";
+      document.getElementById("profileEmail").textContent = "";
     }
-    authButton.innerText = "Perfil";
-    authModal.style.display = "flex";
+  });
 }
 
 async function saveProfile() {
@@ -773,61 +776,40 @@ window.changeProfilePhoto = changeProfilePhoto;
     </div>
 </div>
 
+<!-- Modal de perfil -->
 <div id="profileModal" class="modal">
-  <div class="modal-content" style="max-width:400px; padding:0; overflow:hidden; border-radius:15px; background:#0b0b0b; color:white; box-shadow:0 0 20px rgba(255,0,0,0.2);">
+  <div class="modal-content" style="max-width:400px; padding:0; overflow:hidden; border-radius:15px; background:#0b0b0b; color:white; box-shadow:0 0 20px rgba(255,0,0,0.2); position:relative;">
     <span class="close" onclick="closeProfile()" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:20px; color:#fff;">✖</span>
 
     <!-- Banner editable -->
     <div style="position: relative; width:100%; height:120px; overflow:hidden;">
-      <img id="modalProfileBanner" src="https://wallpapers.com/images/hd/pure-black-background-py9pa0f1mlsscm9s.jpg" 
+      <img id="modalProfileBanner" 
+           src="https://wallpapers.com/images/hd/pure-black-background-py9pa0f1mlsscm9s.jpg" 
            style="width:100%; height:100%; object-fit:cover;">
-      <input type="file" id="bannerInput" style="display:none;" accept="image/*" onchange="changeBanner(event)">
-      <button onclick="document.getElementById('bannerInput').click()" 
-              style="position:absolute; bottom:10px; right:10px; padding:5px 10px; font-size:0.85em; border:none; background:rgba(0,0,0,0.6); color:white; border-radius:6px; cursor:pointer;">
-        Cambiar Banner
-      </button>
+      <label for="bannerInput" 
+             style="position:absolute; bottom:8px; right:8px; background:#ff0000; padding:5px 10px; border-radius:6px; cursor:pointer; font-size:12px;">
+        Cambiar banner
+      </label>
+      <input type="file" id="bannerInput" accept="image/*" style="display:none;">
     </div>
 
-    <!-- Foto de perfil -->
-    <div style="position:relative; margin-top:-50px; text-align:center;">
-      <img id="modalProfilePhoto" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTWJGvwYwD2uCTkKeSt0pCkvzQPbjEcxMx8Q&s" 
-           alt="Foto de perfil" 
-           style="width:100px; height:100px; border-radius:50%; border:4px solid #0b0b0b; object-fit:cover; box-shadow:0 0 15px rgba(255,0,0,0.3);">
-      <input type="file" id="profilePhotoInput" style="display:none;" accept="image/*" onchange="changeProfilePhoto(event)">
-      <button onclick="document.getElementById('profilePhotoInput').click()" 
-              style="margin-top:10px; padding:5px 10px; font-size:0.9em; border:none; background:#ff0000; color:white; border-radius:6px; cursor:pointer;">
-        Cambiar Foto
-      </button>
-    </div>
-
-    <!-- Info usuario -->
+    <!-- Contenido del perfil -->
     <div style="padding:20px; text-align:center;">
-      <h3 id="modalProfileNickname" style="margin-bottom:5px; font-size:1.2em;">Nickname</h3>
-      
-      <!-- Estado activo -->
-      <p style="margin-bottom:15px; font-size:0.95em; color:#3cff00; font-weight:500;">
-        <span style="display:inline-block; width:10px; height:10px; background:#3cff00; border-radius:50%; margin-right:6px; box-shadow:0 0 6px #3cff00;"></span>
-        Activo ahora
-      </p>
-
-      <!-- Descripción -->
-      <div style="margin-bottom:15px;">
-        <textarea id="modalProfileDescription" placeholder="Escribe algo sobre ti..." 
-          style="width:100%; height:80px; background:rgba(255,255,255,0.05); color:white; border:none; border-radius:10px; padding:10px; font-size:0.95em; resize:none; outline:none; transition:0.3s;">
-        </textarea>
-      </div>
-
-      <button onclick="saveProfile()" 
-              style="width:100%; margin-bottom:10px; padding:10px; background:#111; color:#ff0000; border:none; border-radius:8px; cursor:pointer; font-weight:600; transition:0.3s;"
-              onmouseover="this.style.background='#ff0000'; this.style.color='white';"
-              onmouseout="this.style.background='#111'; this.style.color='#ff0000';">
-        Guardar Cambios
-      </button>
-      
-      <button onclick="logoutUser()" 
-              style="width:100%; padding:10px; background:red; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; transition:0.3s;"
-              onmouseover="this.style.background='#b30000';">
-        Cerrar sesión
+      <img id="modalProfilePhoto" 
+           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTWJGvwYwD2uCTkKeSt0pCkvzQPbjEcxMx8Q&s" 
+           style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #ff0000;">
+      <br>
+      <label for="profilePhotoInput" 
+             style="display:inline-block; margin-top:8px; background:#ff0000; padding:5px 10px; border-radius:6px; cursor:pointer; font-size:12px;">
+        Cambiar foto
+      </label>
+      <input type="file" id="profilePhotoInput" accept="image/*" style="display:none;">
+      <h3 id="modalProfileNickname" style="margin-top:10px;">Nickname</h3>
+      <textarea id="modalProfileDescription" placeholder="Escribe una descripción..." 
+                style="width:100%; height:60px; margin-top:10px; border-radius:6px; border:none; padding:8px; resize:none; font-family:inherit;"></textarea>
+      <button onclick="saveProfileModal()" 
+              style="margin-top:10px; background:#ff0000; border:none; padding:10px 20px; border-radius:8px; color:white; font-weight:bold; cursor:pointer;">
+        Guardar cambios
       </button>
     </div>
   </div>
