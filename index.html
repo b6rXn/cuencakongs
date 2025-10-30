@@ -778,42 +778,62 @@ window.changeProfilePhoto = changeProfilePhoto;
 
 <!-- Modal de perfil -->
 <div id="profileModal" class="modal">
-  <div class="modal-content" style="max-width:400px; padding:0; overflow:hidden; border-radius:15px; background:#0b0b0b; color:white; box-shadow:0 0 20px rgba(255,0,0,0.2); position:relative;">
-    <span class="close" onclick="closeProfile()" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:20px; color:#fff;">✖</span>
+  <div class="modal-content" style="max-width:400px; padding:0; overflow:hidden; border-radius:15px; background:#0b0b0b; color:white; box-shadow:0 0 25px rgba(255,0,0,0.3); position:relative;">
+    
+    <!-- Botón de cerrar -->
+    <span class="close" onclick="closeProfile()" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:22px; color:#fff; font-weight:bold;">✖</span>
 
     <!-- Banner editable -->
-    <div style="position: relative; width:100%; height:120px; overflow:hidden;">
+    <div style="position: relative; width:100%; height:130px; overflow:hidden;">
       <img id="modalProfileBanner" 
            src="https://wallpapers.com/images/hd/pure-black-background-py9pa0f1mlsscm9s.jpg" 
+           alt="Banner del perfil"
            style="width:100%; height:100%; object-fit:cover;">
       <label for="bannerInput" 
-             style="position:absolute; bottom:8px; right:8px; background:#ff0000; padding:5px 10px; border-radius:6px; cursor:pointer; font-size:12px;">
+             style="position:absolute; bottom:8px; right:8px; background:rgba(255,0,0,0.8); padding:5px 10px; border-radius:6px; cursor:pointer; font-size:12px;">
         Cambiar banner
       </label>
       <input type="file" id="bannerInput" accept="image/*" style="display:none;">
     </div>
 
-    <!-- Contenido del perfil -->
-    <div style="padding:20px; text-align:center;">
+    <!-- Foto y datos -->
+    <div style="text-align:center; margin-top:-45px;">
       <img id="modalProfilePhoto" 
            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTWJGvwYwD2uCTkKeSt0pCkvzQPbjEcxMx8Q&s" 
-           style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #ff0000;">
+           style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #ff0000; background:#111;">
       <br>
       <label for="profilePhotoInput" 
              style="display:inline-block; margin-top:8px; background:#ff0000; padding:5px 10px; border-radius:6px; cursor:pointer; font-size:12px;">
         Cambiar foto
       </label>
       <input type="file" id="profilePhotoInput" accept="image/*" style="display:none;">
-      <h3 id="modalProfileNickname" style="margin-top:10px;">Nickname</h3>
-      <textarea id="modalProfileDescription" placeholder="Escribe una descripción..." 
-                style="width:100%; height:60px; margin-top:10px; border-radius:6px; border:none; padding:8px; resize:none; font-family:inherit;"></textarea>
+
+      <!-- Nickname y estado -->
+      <h3 id="modalProfileNickname" style="margin-top:10px; font-size:1.2em;">Nickname</h3>
+      <p style="color:#0f0; font-size:0.95em; margin:4px 0;">
+        <span style="display:inline-block; width:10px; height:10px; background:#00ff00; border-radius:50%; margin-right:5px;"></span>
+        Activo ahora
+      </p>
+    </div>
+
+    <!-- Descripción y botones -->
+    <div style="padding:15px; text-align:center;">
+      <textarea id="modalProfileDescription" placeholder="Escribe algo sobre ti..."
+                style="width:100%; height:70px; margin-top:10px; border-radius:8px; border:1px solid #222; background:#111; color:white; padding:8px; resize:none; font-family:inherit; text-align:center; font-size:0.95em; box-shadow:inset 0 0 5px rgba(255,0,0,0.3);"></textarea>
+      
       <button onclick="saveProfileModal()" 
-              style="margin-top:10px; background:#ff0000; border:none; padding:10px 20px; border-radius:8px; color:white; font-weight:bold; cursor:pointer;">
+              style="margin-top:12px; width:100%; background:#ff0000; border:none; padding:10px; border-radius:8px; color:white; font-weight:bold; cursor:pointer; transition:0.2s;">
         Guardar cambios
+      </button>
+      
+      <button onclick="logoutUser()" 
+              style="margin-top:8px; width:100%; background:#222; border:none; padding:10px; border-radius:8px; color:#ff5555; font-weight:bold; cursor:pointer; transition:0.2s;">
+        Cerrar sesión
       </button>
     </div>
   </div>
 </div>
+
 
 </body>
 </html>
