@@ -703,14 +703,14 @@ const loginButton = document.getElementById("loginButton");
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        // Usuario logueado
-        showProfile(user);
-        loginButton.style.display = "none"; // Oculta el botón
+        // Usuario logueado → solo ocultamos el botón de login
+        loginButton.style.display = "none";
     } else {
-        // Usuario no logueado
-        loginButton.style.display = "inline-block"; // Muestra el botón
+        // Usuario no logueado → mostramos el botón de login
+        loginButton.style.display = "inline-block";
     }
 });
+
 
 
 /* ---------- Exponer funciones globales para HTML ---------- */
