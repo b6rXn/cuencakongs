@@ -519,34 +519,30 @@ window.prevPhoto = prevPhoto;
 
 /* ----------------------------- Firebase ----------------------------- */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-import { 
-  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged 
-} from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-import { 
-  getFirestore, doc, setDoc, getDoc, updateDoc 
-} from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
-import { 
-  getStorage, ref, uploadBytes, getDownloadURL 
-} from "https://www.gstatic.com/firebasejs/10.10.0/firebase-storage.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB6l2qW57yNWDssci4CuFWDSHX-tn4cWxA",
   authDomain: "cuencakongs2.firebaseapp.com",
   projectId: "cuencakongs2",
-  storageBucket: "cuencakongs2.appspot.com",
+storageBucket: "cuencakongs2.appspot.com",
   messagingSenderId: "605592434535",
-  appId: "1:605592434535:web:ddf65325597814fb1661c2"
+  appId: "1:605592434535:web:ddf65325597814fb1661c2",
+  measurementId: "G-22R6QMBGWN"
 };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const db = getFirestore();
 const storage = getStorage();
 
+/* ---------- Elementos ---------- */
 const authModal = document.getElementById("authModal");
 const loginForm = document.getElementById("loginForm");
 const registerForm = document.getElementById("registerForm");
-const profileButton = document.getElementById("profileButton");
-
+const profileForm = document.getElementById("profileForm");
+const authButton = document.getElementById("profileButton");
 const profileModal = document.getElementById("profileModal");
 document.getElementById("profilePhotoInput").addEventListener("change", changeProfilePhoto);
 document.getElementById("bannerInput").addEventListener("change", changeBanner);
@@ -805,7 +801,7 @@ window.changeProfilePhoto = changeProfilePhoto;
     <!-- Contenido -->
     <div style="padding:60px 20px 20px; text-align:center;">
       <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
-        <h3 id="modalNickname" style="margin:10px 0;">Nickname</h3>
+        <h3 id="profileNickname" style="margin:10px 0;">Nickname</h3>
         <!-- (Opcional: texto de estado) -->
         <span style="font-size:13px; color:#3ba55d;">Activo</span>
       </div>
@@ -832,7 +828,6 @@ window.changeProfilePhoto = changeProfilePhoto;
     </div>
   </div>
 </div>
-
 
 
 </body>
