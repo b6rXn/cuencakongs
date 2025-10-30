@@ -542,14 +542,31 @@ async function registerUser() {
     const nickname = document.getElementById("regNickname").value;
     const email = document.getElementById("regEmail").value;
     const password = document.getElementById("regPassword").value;
+
+    if (!nickname || !email || !password) {
+        alert("Por favor llena todos los campos.");
+        return;
+    }
+
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
+
+        // Guardar datos en Firestore
         await setDoc(doc(db, "usuarios", user.uid), { nickname, email });
+
+        // Cerrar login/register modal
+        authModal.style.display = "none";
+
+        // Mostrar perfil
+        await showProfile(user);
+        
         alert("Cuenta creada exitosamente!");
-        showProfile(user);
-    } catch (error) { alert(error.message); }
+    } catch (error) { 
+        alert(error.message); 
+    }
 }
+
 
 async function loginUser() {
     const email = document.getElementById("loginEmail").value;
