@@ -335,23 +335,23 @@
 
     <!-- Botón de sonido -->
     <button id="play-button" onclick="toggleAudio()">🔊</button>
+
 <script type="module">
-/* ------------------ Animaciones y efectos ------------------ */
+/* ----------------------------- Nieve ----------------------------- */
 function createSnowflakes() {
     for (let i = 0; i < 50; i++) {
         const snowflake = document.createElement("div");
         snowflake.classList.add("snowflake");
-        snowflake.textContent = "🎃";
-
+        snowflake.textContent = "🎃"; // ❄️
         snowflake.style.left = `${Math.random() * 100}vw`;
         snowflake.style.animationDuration = `${2 + Math.random() * 1.5}s`;
         snowflake.style.fontSize = `${1 + Math.random() * 1.5}em`;
-
         document.getElementById("loader").appendChild(snowflake);
     }
 }
 createSnowflakes();
 
+/* ----------------------------- Loader y contenido ----------------------------- */
 setTimeout(() => {
     document.getElementById("loader-text").innerText = "¡Listo!";
 }, 2000);
@@ -362,6 +362,7 @@ setTimeout(() => {
     startCountdown();
 }, 3000);
 
+/* ----------------------------- Contador ----------------------------- */
 function startCountdown() {
     const countdownElement = document.getElementById("countdown");
     const targetDate = new Date("November 2, 2025 08:11:00").getTime();
@@ -369,7 +370,6 @@ function startCountdown() {
     function updateCountdown() {
         const now = new Date().getTime();
         const distance = targetDate - now;
-
         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
         const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -386,11 +386,12 @@ function startCountdown() {
     const countdownInterval = setInterval(updateCountdown, 1000);
     updateCountdown();
 }
+window.startCountdown = startCountdown;
 
+/* ----------------------------- Música ----------------------------- */
 function toggleAudio() {
     const audio = document.getElementById("background-audio");
     const playButton = document.getElementById("play-button");
-
     if (audio.paused) {
         audio.play();
         playButton.textContent = "🔇";
@@ -399,14 +400,14 @@ function toggleAudio() {
         playButton.textContent = "🔊";
     }
 }
+window.toggleAudio = toggleAudio;
 
+/* ----------------------------- Título animado ----------------------------- */
 function rotateTitle() {
     const title = document.getElementById("title");
     title.style.animation = "rotate360 2s ease-in-out";
-
     setTimeout(() => {
         title.style.animation = "waveEffect 1s ease-in-out";
-
         setTimeout(() => {
             title.style.animation = "boomEffect 0.5s ease-in-out";
             setTimeout(() => {
@@ -416,57 +417,41 @@ function rotateTitle() {
     }, 2000);
 }
 setInterval(rotateTitle, 5000);
+window.rotateTitle = rotateTitle;
 
-/* ------------------ Confetti ------------------ */
+/* ----------------------------- Confetti ----------------------------- */
 function randomInRange(min, max) { return Math.random() * (max - min) + min; }
 
 function createConfetti() {
     const confetti = document.createElement('div');
     confetti.className = 'confetti';
     confetti.textContent = '🎉';
-
     if (Math.random() > 0.7) confetti.classList.add('spin');
-
     confetti.style.left = `${randomInRange(0, window.innerWidth)}px`;
     confetti.style.top = `${randomInRange(0, window.innerHeight / 2)}px`;
     confetti.style.setProperty('--x', `${randomInRange(-150, 150)}px`);
     confetti.style.setProperty('--y', `${randomInRange(-100, 100)}px`);
     confetti.style.animationDuration = `${randomInRange(2.5, 3)}s`;
-
     document.body.appendChild(confetti);
-
     confetti.addEventListener('animationend', () => confetti.remove());
 }
 
 function explodeConfetti() {
-    for (let i = 0; i < 80; i++) {
-        setTimeout(createConfetti, i * 15);
-    }
+    for (let i = 0; i < 80; i++) setTimeout(createConfetti, i * 15);
 }
-
 const triggerDate = new Date('2025-11-02T00:00:00'); 
 if (new Date() >= triggerDate) window.onload = explodeConfetti;
+window.explodeConfetti = explodeConfetti;
 
-/* ------------------ Memories ------------------ */
+/* ----------------------------- Memories ----------------------------- */
 const photos = [
     "https://i.imgur.com/Tv7Fv4G.jpeg", "https://i.imgur.com/KtTiF05.jpeg",
     "https://i.imgur.com/C91EBGl.jpeg", "https://i.imgur.com/Jp6QHle.jpeg",
     "https://i.imgur.com/XHzXuE6.jpeg", "https://i.imgur.com/mAoj9av.jpeg",
     "https://i.imgur.com/RYgzzm6.jpeg", "https://i.imgur.com/0YtrsGs.jpeg",
     "https://i.imgur.com/alUGmLw.jpeg", "https://i.imgur.com/xrjRwsx.jpeg",
-    "https://i.imgur.com/Q0yVUqC.jpeg", "https://i.imgur.com/F8utfDA.jpeg",
-    "https://i.imgur.com/lDRmL1P.jpeg", "https://i.imgur.com/iWkJvw8.jpeg",
-    "https://i.imgur.com/6RWRnVG.jpeg", "https://i.imgur.com/vCPkepZ.jpeg",
-    "https://i.imgur.com/PiLS42u.jpeg", "https://i.imgur.com/2MRj7D8.jpeg",
-    "https://i.imgur.com/lCjIv8v.jpeg", "https://i.imgur.com/SfnDG28.jpeg",
-    "https://i.imgur.com/KzvOTDH.jpeg", "https://i.imgur.com/pa9rMg1.jpeg",
-    "https://i.imgur.com/7Ihyrda.jpeg", "https://i.imgur.com/b4z4A9K.jpeg",
-    "https://i.imgur.com/uFNdwbK.jpeg", "https://i.imgur.com/Ycw0vFP.jpeg",
-    "https://i.imgur.com/1xxSUrD.jpeg", "https://i.imgur.com/QJNJ72G.jpeg",
-    "https://i.imgur.com/GQIzvLT.jpeg", "https://i.imgur.com/HGCsbMk.jpeg",
-    "https://i.imgur.com/cPqo3Ij.jpeg"
+    "https://i.imgur.com/Q0yVUqC.jpeg", "https://i.imgur.com/F8utfDA.jpeg"
 ];
-
 let currentIndex = 0;
 
 function openMemories() {
@@ -475,18 +460,26 @@ function openMemories() {
     document.getElementById("memoryImage").src = photos[currentIndex];
     modal.style.display = "flex";
 }
-
 function closeMemories() { document.getElementById("memoriesModal").style.display = "none"; }
-function nextPhoto() { currentIndex = (currentIndex + 1) % photos.length; document.getElementById("memoryImage").src = photos[currentIndex]; }
-function prevPhoto() { currentIndex = (currentIndex - 1 + photos.length) % photos.length; document.getElementById("memoryImage").src = photos[currentIndex]; }
+function nextPhoto() {
+    currentIndex = (currentIndex + 1) % photos.length;
+    document.getElementById("memoryImage").src = photos[currentIndex];
+}
+function prevPhoto() {
+    currentIndex = (currentIndex - 1 + photos.length) % photos.length;
+    document.getElementById("memoryImage").src = photos[currentIndex];
+}
+window.openMemories = openMemories;
+window.closeMemories = closeMemories;
+window.nextPhoto = nextPhoto;
+window.prevPhoto = prevPhoto;
 
-/* ------------------ Firebase Auth y Profile ------------------ */
+/* ----------------------------- Firebase ----------------------------- */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-storage.js";
 
-// Config Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyB6l2qW57yNWDssci4CuFWDSHX-tn4cWxA",
   authDomain: "cuencakongs2.firebaseapp.com",
@@ -496,34 +489,34 @@ const firebaseConfig = {
   appId: "1:605592434535:web:ddf65325597814fb1661c2",
   measurementId: "G-22R6QMBGWN"
 };
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const db = getFirestore();
+const storage = getStorage();
 
-/* ------------------ Funciones de Auth ------------------ */
+/* ---------- Elementos ---------- */
 const authModal = document.getElementById("authModal");
 const loginForm = document.getElementById("loginForm");
 const registerForm = document.getElementById("registerForm");
 const profileForm = document.getElementById("profileForm");
-const authButton = document.querySelector(".button-list button[onclick='openLogin()']");
+const authButton = document.getElementById("profileButton");
+const profileModal = document.getElementById("profileModal");
 
-window.openLogin = () => {
+/* ---------- Funciones ---------- */
+function openLogin() {
     authModal.style.display = "flex";
     loginForm.style.display = "block";
     registerForm.style.display = "none";
     profileForm.style.display = "none";
-};
+}
+function showRegister() { loginForm.style.display = "none"; registerForm.style.display = "block"; }
+function showLogin() { loginForm.style.display = "block"; registerForm.style.display = "none"; }
+function closeAuth() { authModal.style.display = "none"; }
 
-window.closeAuth = () => { authModal.style.display = "none"; };
-window.showRegister = () => { loginForm.style.display = "none"; registerForm.style.display = "block"; };
-window.showLogin = () => { loginForm.style.display = "block"; registerForm.style.display = "none"; };
-
-window.register = async () => {
+async function registerUser() {
     const nickname = document.getElementById("regNickname").value;
     const email = document.getElementById("regEmail").value;
     const password = document.getElementById("regPassword").value;
-
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
@@ -531,62 +524,61 @@ window.register = async () => {
         alert("Cuenta creada exitosamente!");
         showProfile(user);
     } catch (error) { alert(error.message); }
-};
+}
 
-window.login = async () => {
+async function loginUser() {
     const email = document.getElementById("loginEmail").value;
     const password = document.getElementById("loginPassword").value;
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        showProfile(user);
+        showProfile(userCredential.user);
     } catch (error) { alert(error.message); }
-};
+}
+document.querySelector("#authModal .close").addEventListener("click", () => {
+    document.getElementById("authModal").style.display = "none";
+});
+
 
 async function showProfile(user) {
     loginForm.style.display = "none";
     registerForm.style.display = "none";
     profileForm.style.display = "block";
-
     const docSnap = await getDoc(doc(db, "usuarios", user.uid));
     if (docSnap.exists()) {
         const data = docSnap.data();
         document.getElementById("profileNickname").innerText = `Nickname: ${data.nickname}`;
         document.getElementById("profileEmail").innerText = `Email: ${data.email}`;
     }
-
     authButton.innerText = "Perfil";
-    authButton.setAttribute("onclick","authModal.style.display='flex'");
     authModal.style.display = "flex";
 }
 
-window.logout = () => {
-    signOut(auth).then(() => {
-        alert("Sesión cerrada");
-        authButton.innerText = "Iniciar sesión";
-        authButton.setAttribute("onclick","openLogin()");
-        authModal.style.display = "none";
-    });
-};
+async function saveProfile() {
+    const user = auth.currentUser;
+    if (!user) return;
+    const description = document.getElementById("profileDescription").value;
+    await updateDoc(doc(db, "usuarios", user.uid), { description });
+    alert("Perfil actualizado!");
+}
 
-onAuthStateChanged(auth, (user) => {
-    if (user) showProfile(user);
-});
+async function changeProfilePhoto(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const user = auth.currentUser;
+    if (!user) return;
+    const storageRef = ref(storage, `profilePhotos/${user.uid}`);
+    await uploadBytes(storageRef, file);
+    const photoURL = await getDownloadURL(storageRef);
+    await updateDoc(doc(db, "usuarios", user.uid), { profilePhotoURL: photoURL });
+    document.getElementById("profilePhoto").src = photoURL;
+    alert("Foto de perfil actualizada!");
+}
 
-/* ------------------ Profile modal ------------------ */
-const profileModal = document.getElementById("profileModal");
-
-window.openProfile = () => {
-    profileModal.style.display = "flex";
-    loadProfile();
-};
-
-window.closeProfile = () => { profileModal.style.display = "none"; };
-
+function openProfile() { profileModal.style.display = "flex"; loadProfile(); }
+function closeProfile() { profileModal.style.display = "none"; }
 async function loadProfile() {
     const user = auth.currentUser;
     if (!user) return;
-
     const docSnap = await getDoc(doc(db, "usuarios", user.uid));
     if (docSnap.exists()) {
         const data = docSnap.data();
@@ -597,34 +589,37 @@ async function loadProfile() {
     }
 }
 
-window.saveProfile = async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-    const description = document.getElementById("profileDescription").value;
-    await updateDoc(doc(db, "usuarios", user.uid), { description });
-    alert("Perfil actualizado!");
-};
+function logoutUser() {
+    signOut(auth).then(() => {
+        alert("Sesión cerrada");
+        authButton.innerText = "Iniciar sesión";
+        authModal.style.display = "none";
+        profileModal.style.display = "none";
+    });
+}
 
-window.changeProfilePhoto = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-    const user = auth.currentUser;
-    if (!user) return;
 
-    const storageRef = ref(getStorage(), `profilePhotos/${user.uid}`);
-    await uploadBytes(storageRef, file);
-    const photoURL = await getDownloadURL(storageRef);
 
-    await updateDoc(doc(db, "usuarios", user.uid), { profilePhotoURL: photoURL });
-    document.getElementById("profilePhoto").src = photoURL;
-    alert("Foto de perfil actualizada!");
-};
-
+/* ---------- Eventos ---------- */
 authButton.addEventListener("click", () => {
-    const user = auth.currentUser;
-    if (user) openProfile();
-    else { alert("Primero debes iniciar sesión."); openLogin(); }
+    if (auth.currentUser) openProfile();
+    else openLogin();
 });
+
+
+onAuthStateChanged(auth, (user) => { if (user) showProfile(user); });
+
+/* ---------- Exponer funciones globales para HTML ---------- */
+window.openLogin = openLogin;
+window.showRegister = showRegister;
+window.showLogin = showLogin;
+window.registerUser = registerUser;
+window.loginUser = loginUser;
+window.logoutUser = logoutUser;
+window.openProfile = openProfile;
+window.closeProfile = closeProfile;
+window.saveProfile = saveProfile;
+window.changeProfilePhoto = changeProfilePhoto;
 </script>
 
 
