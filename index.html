@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sapotes</title>
-<audio id="background-audio" src="https://cdn.imageurlgenerator.com/uploads/ee07c47e-d745-4ada-9af1-18b739c5c321.mp3" loop></audio>
+
+    
+<audio id="background-audio" loop>
+    <source src="https://cdn.imageurlgenerator.com/uploads/ee07c47e-d745-4ada-9af1-18b739c5c321.mp3" type="audio/mpeg">
+</audio>    
+
     
     <style>
       
@@ -415,6 +420,18 @@ function toggleAudio() {
 }
 window.toggleAudio = toggleAudio;
 
+
+/* ----------------------------- Música automática ----------------------------- */
+const audio = document.getElementById("background-audio");
+
+audio.volume = 0.5;
+
+window.addEventListener("load", () => {
+    audio.play().catch(() => {
+        console.log("El navegador requiere un clic para reproducir la música.");
+    });
+});
+    
 /* ----------------------------- Título animado ----------------------------- */
 function rotateTitle() {
     const title = document.getElementById("title");
