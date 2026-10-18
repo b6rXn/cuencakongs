@@ -6,9 +6,7 @@
     <title>sapotes</title>
 
     
-<audio id="background-audio" loop>
-    <source src="https://files.catbox.moe/vgkqq1.mp3" type="audio/mpeg">
-</audio>    
+<audio id="background-audio" src="https://files.catbox.moe/vgkqq1.mp3" loop></audio>
 
     
     <style>
@@ -421,17 +419,7 @@ function toggleAudio() {
 window.toggleAudio = toggleAudio;
 
 
-/* ----------------------------- Música automática ----------------------------- */
-const audio = document.getElementById("background-audio");
 
-audio.volume = 0.5;
-
-window.addEventListener("load", () => {
-    audio.play().catch(() => {
-        console.log("El navegador requiere un clic para reproducir la música.");
-    });
-});
-    
 /* ----------------------------- Título animado ----------------------------- */
 function rotateTitle() {
     const title = document.getElementById("title");
