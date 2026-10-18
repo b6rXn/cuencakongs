@@ -391,7 +391,7 @@ const targetDate = new Date("November 24, 2026 00:00:00").getTime();
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        countdownElement.innerHTML = `Faltan: ${days} dias con ${hours} horas ${minutes} minutos y ${seconds} segundos`;
+        countdownElement.innerHTML = `Faltan: ${days} dias con ${hours} horas ${minutes} minutos y ${seconds} segundos pal concierto`;
 
         if (distance < 0) {
             clearInterval(countdownInterval);
