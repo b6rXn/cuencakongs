@@ -337,8 +337,8 @@
     </div>
 
     <!-- Botón de sonido -->
-    <button id="play-button" onclick="toggleAudio()">🔊</button>
-
+<button id="play-button" onclick="toggleAudio()">🔇</button>
+    
 <script type="module">
 /* ----------------------------- Nieve ----------------------------- */
 function createSnowflakes() {
@@ -405,18 +405,42 @@ const targetDate = new Date("November 24, 2026 00:00:00").getTime();
 window.startCountdown = startCountdown;
 
 /* ----------------------------- Música ----------------------------- */
-function toggleAudio() {
-    const audio = document.getElementById("background-audio");
-    const playButton = document.getElementById("play-button");
+
+/* ----------------------------- Música ----------------------------- */
+const audio = document.getElementById("background-audio");
+const playButton = document.getElementById("play-button");
+
+// Intentar reproducir la música al entrar a la página
+audio.muted = false;
+
+audio.play().then(() => {
+    playButton.textContent = "🔊";
+}).catch(() => {
+    // Chrome puede bloquear la reproducción automática
+    playButton.textContent = "🔊";
+});
+
+// El botón solo silencia o activa el sonido
+async function toggleAudio() {
     if (audio.paused) {
-        audio.play();
-        playButton.textContent = "🔇";
-    } else {
-        audio.pause();
-        playButton.textContent = "🔊";
+        audio.muted = false;
+
+        try {
+            await audio.play();
+            playButton.textContent = "🔊";
+        } catch (error) {
+            console.log("El navegador bloqueó la reproducción automática.");
+        }
+
+        return;
     }
+
+    audio.muted = !audio.muted;
+    playButton.textContent = audio.muted ? "🔇" : "🔊";
 }
+
 window.toggleAudio = toggleAudio;
+
 
 
 
